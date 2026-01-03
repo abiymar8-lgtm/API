@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Buku</title>
+    <style>
+        .book img {
+            width: 150px;
+            border-radius: 8px;
+        }
+
+        .book {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="books">
+        <h1>Daftar Buku</h1>
+        <button onclick="getBooks()">Lihat Daftar Buku</button>
+        <div class="book-list"></div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function getBooks() {
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: "https://openlibrary.org/subjects/fantasy.json?limit=10",
+                method: "GET"
+            };
+
+            $.ajax(settings).done(function (response) {
+                let html = "";
+
+                const books = response.works; // array buku
+
+                for (let i = 0; i < books.length; i++) {
+                    let cover = books[i].cover_id
+                        ? `https://covers.openlibrary.org/b/id/${books[i].cover_id}-M.jpg`
+                        : "https://via.placeholder.com/150";
+
+                    html += `
+                        <div class="book">
+                            <img src="${cover}" alt="${books[i].title}">
+                            <h2>${books[i].title}</h2>
+                            <p>Pengarang: ${books[i].authors[0]?.name || "Tidak diketahui"}</p>
+                            <p>Tahun: ${books[i].first_publish_year || "-"}</p>
+                        </div>
+                    `;
+                }
+
+                $(".book-list").html(html);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
